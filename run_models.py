@@ -45,7 +45,7 @@ def use_lightgbm(params,train_X,train_y,X_test):
 #DATA_DIR="c:\\Users\\tihor\\Documents\\kaggle\\santander\\"
 DATA_DIR="d:\\\\kaggle\\santander\\"
 df_train=pd.read_csv(DATA_DIR+'train.csv')
-df_test=pd.read_csv(DATA_DIR+'train.csv')
+df_test=pd.read_csv(DATA_DIR+'test.csv')
 
 train_y=df_train['target'].values
 train_X=df_train[[col for col in df_train.columns if col not in ['ID_code','target']]].values
@@ -53,7 +53,7 @@ del df_train
 X_test=df_test[[col for col in df_test.columns if col not in ['ID_code','target']]].values
 #del df_test
 
-def run_xgb():
+def run_xgb(train_X,train_y,df_test):
     params = {
             'min_child_weight': 10.0,
             'objective': 'binary:logistic',
@@ -68,10 +68,10 @@ def run_xgb():
             }
     predictions=use_xgboost(params,train_X,train_y,X_test)
     df_test['target']=predictions
-    df_text=df_test[['ID_code','target']]
+    df_test=df_test[['ID_code','target']]
     df_test.to_csv("xgb_submission.csv",index=False)
 
-def run_lgb():
+def run_lgb(train_X,train_y,df_test):
     params={
             'num_leaves': 10,
             'max_bin': 119,
@@ -100,7 +100,7 @@ def run_lgb():
         }
     predictions=use_lightgbm(params,train_X,train_y,X_test)
     df_test['target']=predictions
-    df_text=df_test[['ID_code','target']]
+    df_test=df_test[['ID_code','target']]
     df_test.to_csv("lgb_submission.csv",index=False)
 
-run_lgb()
+run_lgb(train_X,train_y,df_test)
