@@ -35,14 +35,15 @@ def use_lightgbm(params,train_X,train_y,X_test):
         xg_valid=lgb.Dataset(X_valid,label=y_valid,free_raw_data=False)
 
         clf = lgb.train(params, xg_train, 5000, valid_sets=[xg_valid], verbose_eval=50, early_stopping_rounds=50)
-        oof[valid_index] = clf.predict(X_test, num_iteration=clf.best_iteration)
+        oof[valid_index] = clf.predict(X_valid, num_iteration=clf.best_iteration)
 
         print('[Fold %d/%d Prediciton:]' % (i + 1, n_folds))
         p_test=clf.predict(X_test, num_iteration=clf.best_iteration)
         predictions += p_test / n_folds
     return predictions
 
-DATA_DIR="c:\\Users\\tihor\\Documents\\kaggle\\santander\\"
+#DATA_DIR="c:\\Users\\tihor\\Documents\\kaggle\\santander\\"
+DATA_DIR="d:\\\\kaggle\\santander\\"
 df_train=pd.read_csv(DATA_DIR+'train.csv')
 df_test=pd.read_csv(DATA_DIR+'train.csv')
 
@@ -52,46 +53,54 @@ del df_train
 X_test=df_test[[col for col in df_test.columns if col not in ['ID_code','target']]].values
 #del df_test
 
-#params = {
-#        'min_child_weight': 10.0,
-#        'objective': 'binary:logistic',
-#        'max_depth': 7,
-#        'max_delta_step': 1.8,
-#        'colsample_bytree': 0.4,
-#        'subsample': 0.8,
-#        'eta': 0.025,
-#        'gamma': 0.65,
-#        'num_boost_round' : 700,
-#        'eval_metric':'auc',
-#        }
-#predictions=use_xgboost(params,train_X,train_y,X_test)
+def run_xgb():
+    params = {
+            'min_child_weight': 10.0,
+            'objective': 'binary:logistic',
+            'max_depth': 7,
+            'max_delta_step': 1.8,
+            'colsample_bytree': 0.4,
+            'subsample': 0.8,
+            'eta': 0.025,
+            'gamma': 0.65,
+            'num_boost_round' : 700,
+            'eval_metric':'auc',
+            }
+    predictions=use_xgboost(params,train_X,train_y,X_test)
+    df_test['target']=predictions
+    df_text=df_test[['ID_code','target']]
+    df_test.to_csv("xgb_submission.csv",index=False)
 
-params={
-        'num_leaves': 10,
-        'max_bin': 119,
-        'min_data_in_leaf': 11,
-        'learning_rate': 0.02,
-        'min_sum_hessian_in_leaf': 0.00245,
-        'bagging_fraction': 1.0,
-        'bagging_freq': 5,
-        'feature_fraction': 0.05,
-        'lambda_l1': 4.972,
-        'lambda_l2': 2.276,
-        'min_gain_to_split': 0.65,
-        'max_depth': 14,
-        'save_binary': True,
-        'seed': 1337,
-        'feature_fraction_seed': 1337,
-        'bagging_seed': 1337,
-        'drop_seed': 1337,
-        'data_random_seed': 1337,
-        'objective': 'binary',
-        'boosting_type': 'gbdt',
-        'verbose': 1,
-        'metric': 'auc',
-        'is_unbalance': True,
-        'boost_from_average': False,
-    }
-predictions=use_lightgbm(params,train_X,train_y,X_test)
-df_test['target']=predictions
-df_test.to_csv("lgb_submission.csv",index=False)
+def run_lgb():
+    params={
+            'num_leaves': 10,
+            'max_bin': 119,
+            'min_data_in_leaf': 11,
+            'learning_rate': 0.02,
+            'min_sum_hessian_in_leaf': 0.00245,
+            'bagging_fraction': 1.0,
+            'bagging_freq': 5,
+            'feature_fraction': 0.05,
+            'lambda_l1': 4.972,
+            'lambda_l2': 2.276,
+            'min_gain_to_split': 0.65,
+            'max_depth': 14,
+            'save_binary': True,
+            'seed': 1337,
+            'feature_fraction_seed': 1337,
+            'bagging_seed': 1337,
+            'drop_seed': 1337,
+            'data_random_seed': 1337,
+            'objective': 'binary',
+            'boosting_type': 'gbdt',
+            'verbose': 1,
+            'metric': 'auc',
+            'is_unbalance': True,
+            'boost_from_average': False,
+        }
+    predictions=use_lightgbm(params,train_X,train_y,X_test)
+    df_test['target']=predictions
+    df_text=df_test[['ID_code','target']]
+    df_test.to_csv("lgb_submission.csv",index=False)
+
+run_lgb()
