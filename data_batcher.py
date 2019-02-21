@@ -11,9 +11,11 @@ class SantanderDataObject(object):
         df_train = pd.read_csv(DATA_DIR + 'train.csv')
         df_test = pd.read_csv(DATA_DIR + 'test.csv')
         train_y = df_train['target'].values
+        train_y=np.expand_dims(train_y,1)
         train_X = df_train[[col for col in df_train.columns if col not in ['ID_code', 'target']]].values
         self.X_train,self.X_val,self.y_train,self.y_val=train_test_split(train_X,train_y,test_size=val_size)
-        self.X_test = df_test[[col for col in df_test.columns if col not in ['ID_code', 'target']]].values
+        self.test_ids=df_test['ID_code'].values
+        self.X_test=df_test[[col for col in df_test.columns if col not in ['ID_code', 'target']]].values
 
     def generate_one_epoch(self):
         self.X_train,self.y_train=shuffle(self.X_train,self.y_train)
