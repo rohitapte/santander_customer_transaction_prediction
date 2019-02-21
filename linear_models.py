@@ -42,8 +42,8 @@ def use_lightgbm(params,train_X,train_y,X_test):
         predictions += p_test / n_folds
     return predictions
 
-#DATA_DIR="c:\\Users\\tihor\\Documents\\kaggle\\santander\\"
-DATA_DIR="d:\\\\kaggle\\santander\\"
+DATA_DIR="c:\\Users\\tihor\\Documents\\kaggle\\santander\\"
+#DATA_DIR="d:\\\\kaggle\\santander\\"
 df_train=pd.read_csv(DATA_DIR+'train.csv')
 df_test=pd.read_csv(DATA_DIR+'test.csv')
 
@@ -73,18 +73,18 @@ def run_xgb(train_X,train_y,df_test):
 
 def run_lgb(train_X,train_y,df_test):
     params={
-            'num_leaves': 10,
+            'num_leaves': 12,
             'max_bin': 119,
-            'min_data_in_leaf': 11,
-            'learning_rate': 0.02,
-            'min_sum_hessian_in_leaf': 0.00245,
+            'min_data_in_leaf': 10,
+            'learning_rate': 0.027674233178344776,
+            'min_sum_hessian_in_leaf': 0.0041135185671155455,
             'bagging_fraction': 1.0,
             'bagging_freq': 5,
-            'feature_fraction': 0.05,
-            'lambda_l1': 4.972,
-            'lambda_l2': 2.276,
-            'min_gain_to_split': 0.65,
-            'max_depth': 14,
+            'feature_fraction': 0.05417588475081639,
+            'lambda_l1': 4.960965942297994,
+            'lambda_l2': 1.3793048534309067,
+            'min_gain_to_split': 0.04245137968559498,
+            'max_depth': 15,
             'save_binary': True,
             'seed': 1337,
             'feature_fraction_seed': 1337,

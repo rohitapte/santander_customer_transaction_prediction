@@ -19,9 +19,9 @@ class SantanderVanillaModel(object):
         self.keep_prob=tf.placeholder_with_default(1.0, shape=())
 
     def build_graph(self):
-        HIDDEN_LAYER_1=2048
-        HIDDEN_LAYER_2=2048
-        HIDDEN_LAYER_3=2048
+        HIDDEN_LAYER_1=4096
+        HIDDEN_LAYER_2=4096
+        HIDDEN_LAYER_3=4096
 
         output1=tf.contrib.layers.fully_connected(self.x,HIDDEN_LAYER_1,activation_fn=tf.nn.relu)
         output2=tf.contrib.layers.fully_connected(output1,HIDDEN_LAYER_2,activation_fn=tf.nn.relu)
@@ -61,6 +61,20 @@ class SantanderVanillaModel(object):
             validation_accuracy += validation_accuracy_batch[0]*x.shape[0]
         validation_accuracy/=total_items
         return validation_accuracy
+
+    def get_validation_predictions(self,sess):
+        output=[]
+        values=[]
+        for x,y in self.dataObject.generate_dev_data():
+            dev_data_feed={
+                self.x:x,
+                self.keep_prob:1.0,
+            }
+            dev_output=sess.run(self.prediction,feed_dict=dev_data_feed)
+            dev_output=np.squeeze(dev_output )
+            output.extend(dev_output.tolist())
+            values.extend(y)
+        return output,values
 
     def get_test_data(self,sess):
         output=[]
